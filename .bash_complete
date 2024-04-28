@@ -1,4 +1,24 @@
 # chat-client.pyの補完スクリプト
+_easy_chat_llama_cpp_completion() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    prev2="${COMP_WORDS[COMP_CWORD-2]}"
+
+    # '-m' オプションの後で補完を行う
+    if [[ ${prev2} == "server" && ${prev} == "-k" ]]; then
+        # SQLiteからニックネームを取得
+        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT nickname FROM llm;")
+        # 補完候補を生成
+        COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+    fi
+
+    return 0
+}
+complete -F _easy_chat_llama_cpp_completion ./easy_chat_llama_cpp.py
+
+# chat-client.pyの補完スクリプト
 _chat_client_completion() {
     local cur prev opts
     COMPREPLY=()
@@ -8,9 +28,12 @@ _chat_client_completion() {
     # '-m' オプションの後で補完を行う
     if [[ ${prev} == "-n" ]]; then
         # SQLiteからニックネームを取得
-        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT nickname FROM llm;")
+        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT namespace FROM llm;")
         # 補完候補を生成
         COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+    elif [[ ${prev} == "-s" ]]; then
+        # ./prompt/system ディレクトリ内のファイルを候補に
+        COMPREPLY=($(compgen -W "$(ls ./prompt/system/)" -- ${cur}))
     fi
 
     return 0
