@@ -1,0 +1,21 @@
+# chat-client.pyの補完スクリプト
+_chat_client_completion() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    # '-m' オプションの後で補完を行う
+    if [[ ${prev} == "-n" ]]; then
+        # SQLiteからニックネームを取得
+        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT nickname FROM llm;")
+        # 補完候補を生成
+        COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+    fi
+
+    return 0
+}
+
+# chat-client.pyコマンドに補完関数を適用
+complete -F _chat_client_completion ./chat-client.py
+
