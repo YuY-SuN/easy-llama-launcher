@@ -12,7 +12,7 @@ class LLMService:
 
     def download_model(self, llm_dto: LLMDTO):
         # モデルのダウンロードロジック（ダミー）
-        self.download_model_from_source(llm_dto.model_namespace, llm_dto.model_name)
+        self.download_model_from_source(llm_dto.namespace, llm_dto.model_name)
         
         # リポジトリにDTOを保存
         self.llm_repo.set(llm_dto)

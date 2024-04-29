@@ -11,7 +11,7 @@ LLM_URL  = f"http://{LLM_ADDR}:{LLM_PORT}/completion"
 from argparse import ArgumentParser
 
 ap = ArgumentParser()
-ap.add_argument("-n", "--name", help="モデル名", required=True)
+ap.add_argument("-c", "--chat-template", help="chatのテンプレート", required=True)
 ap.add_argument("-s", "--system-prompt", help="システムプロンプト")
 ap.add_argument("-u", "--user-prompt", help="ユーザープロンプト")
 ap.add_argument("--oneshot", help="単発の質疑応答フラグ(会話履歴を持たない)", action="store_true")
@@ -19,7 +19,7 @@ args = ap.parse_args()
 
 ## chat-templateをhuggingfaceから落とす
 from transformers import AutoTokenizer
-tokenizer = AutoTokenizer.from_pretrained(args.name)
+tokenizer = AutoTokenizer.from_pretrained(args.chat_template)
 
 ## system_promptがファイルだったらファイルから読み込む
 import os

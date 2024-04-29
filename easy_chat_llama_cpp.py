@@ -31,8 +31,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.command == "download":
-        service.download_model( LLMDTO(  namespace=args.chat_template
-                                      ,  model_namespace=args.namespace
+        service.download_model( LLMDTO(  namespace=args.namespace
+                                      ,  chat_template=args.chat_template
                                       ,  model_name=args.modelname
                                       ,  nickname=args.nickname if args.nickname else args.modelname) )
     elif args.command == "server":

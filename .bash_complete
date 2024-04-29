@@ -6,7 +6,7 @@ _easy_chat_llama_cpp_completion() {
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     prev2="${COMP_WORDS[COMP_CWORD-2]}"
 
-    # '-m' オプションの後で補完を行う
+    # '-k' オプションの後で補完を行う
     if [[ ${prev2} == "server" && ${prev} == "-k" ]]; then
         # SQLiteからニックネームを取得
         opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT nickname FROM llm;")
@@ -25,10 +25,10 @@ _chat_client_completion() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # '-m' オプションの後で補完を行う
-    if [[ ${prev} == "-n" ]]; then
+    # '-c' オプションの後で補完を行う
+    if [[ ${prev} == "-c" ]]; then
         # SQLiteからニックネームを取得
-        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT namespace FROM llm;")
+        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT chat_template FROM llm;")
         # 補完候補を生成
         COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
     elif [[ ${prev} == "-s" ]]; then

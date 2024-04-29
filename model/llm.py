@@ -6,7 +6,7 @@ Base = declarative_base()
 
 class LLM(Base):
     __tablename__ = 'llm'
-    model_name = Column(String, primary_key=True)
-    namespace = Column(String)
-    nickname = Column(String)
+    model_name    = Column(String, primary_key=True)
+    chat_template = Column(String)
+    nickname      = Column(String)
 
