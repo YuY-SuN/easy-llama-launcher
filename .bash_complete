@@ -1,5 +1,5 @@
 # chat-client.pyの補完スクリプト
-_easy_chat_llama_cpp_completion() {
+_easy_llama_launcher_completion() {
     local cur prev opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -9,14 +9,14 @@ _easy_chat_llama_cpp_completion() {
     # '-k' オプションの後で補完を行う
     if [[ ${prev2} == "server" && ${prev} == "-k" ]]; then
         # SQLiteからニックネームを取得
-        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT nickname FROM llm;")
+        opts=$(sqlite3 easy_llama_launcher.db "SELECT nickname FROM llm;")
         # 補完候補を生成
         COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
     fi
 
     return 0
 }
-complete -F _easy_chat_llama_cpp_completion ./easy_chat_llama_cpp.py
+complete -F _easy_llama_launcher_completion ./easy_llama_launcher.py
 
 # chat-client.pyの補完スクリプト
 _chat_client_completion() {
@@ -28,7 +28,7 @@ _chat_client_completion() {
     # '-c' オプションの後で補完を行う
     if [[ ${prev} == "-c" ]]; then
         # SQLiteからニックネームを取得
-        opts=$(sqlite3 easy_chat_llama_cpp.db "SELECT chat_template FROM llm;")
+        opts=$(sqlite3 easy_llama_launcher.db "SELECT chat_template FROM llm;")
         # 補完候補を生成
         COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
     elif [[ ${prev} == "-s" ]]; then
