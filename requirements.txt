@@ -2,3 +2,4 @@ sqlalchemy
 pydantic
 huggingface_hub
 llama-cpp-python
+pyclip

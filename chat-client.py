@@ -12,9 +12,11 @@ from argparse import ArgumentParser
 
 ap = ArgumentParser()
 ap.add_argument("-c", "--chat-template", help="chatのテンプレート", required=True)
-ap.add_argument("-s", "--system-prompt", help="システムプロンプト")
-ap.add_argument("-u", "--user-prompt", help="ユーザープロンプト")
-ap.add_argument("--oneshot", help="単発の質疑応答フラグ(会話履歴を持たない)", action="store_true")
+ap.add_argument("-s", "--system-prompt", help="システムプロンプト", required=True)
+ap.add_argument("-u", "--user-prompt", help="ユーザープロンプト, 指定がない場合は標準入力から受け付ける")
+ap.add_argument("-v", "--verbose", help="デバッグ出力など", action="store_true")
+## TODO: どちらかというと履歴をもたせるほうをフラグ化したほうが..
+#ap.add_argument("--oneshot", help="単発の質疑応答フラグ(会話履歴を持たない)", action="store_true")
 args = ap.parse_args()
 
 ## chat-templateをhuggingfaceから落とす
@@ -28,15 +30,6 @@ if os.path.exists(system_prompt) :
     with open(system_prompt) as fd:
         system_prompt = fd.read()
 
-## user_promptがファイルだったファイルから読み込む
-### user_promptがなかったら標準入力から
-import sys
-user_prompt = args.user_prompt
-if user_prompt is None:
-    user_prompt = sys.stdin.read()
-elif os.path.exists(user_prompt) :
-    with open(user_prompt) as fd:
-        user_prompt = fd.read()
 
 ## リクエスト(method)
 import urllib.request
@@ -62,8 +55,35 @@ def question(user_prompt):
             print(resdata)
             raise RuntimeError
 
-answer = question(user_prompt)
-print( json.loads(answer)["content"] )
-print("----------------------------")
-print( answer)
+## user_promptがファイルだったファイルから読み込む
+### user_promptがなかったら標準入力から
+import sys
+import pyclip
+user_prompt = args.user_prompt
+if user_prompt is None:
+    while True:
+        print( "User: ", end="", flush=True)
+        user_prompt = sys.stdin.read()
+        print( "\n----- send server -----\n")
+        answer = question(user_prompt)
+        print( json.loads(answer)["content"] )
+        try :
+            pyclip.copy(json.loads(answer)["content"] )
+        except:
+            ## TODO: WSLだとexceptionが出てしまう
+            pass
+else:
+    if os.path.exists(user_prompt) :
+        with open(user_prompt) as fd:
+            user_prompt = fd.read()
+    answer = question(user_prompt)
+    print( json.loads(answer)["content"] )
+    if args.verbose :
+        print("----------------------------")
+        print( answer)
+    try :
+        pyclip.copy(json.loads(answer)["content"] )
+    except:
+        ## TODO: WSLだとexceptionが出てしまう
+        pass
 
