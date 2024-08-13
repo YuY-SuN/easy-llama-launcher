@@ -33,7 +33,7 @@ class LLMService:
     def start_model_server(self, llm_dto: LLMDTO):
         print(f"Starting server for model: {llm_dto.model_name} with nickname: {llm_dto.nickname}")
         ## TODO: configから各種パラメータを拾ってきたいところ
-        process = subprocess.Popen([f'{config.llama_cpp_root}/server', '-m', llm_dto.model_name, '-c', str(config.llama_cpp_ctx), '--port', str(config.llama_cpp_port)], 
+        process = subprocess.Popen([f'{config.llama_cpp_root}/llama-server', '-m', llm_dto.model_name, '-c', str(config.llama_cpp_ctx), '--port', str(config.llama_cpp_port)], 
                                    stdin=subprocess.DEVNULL, 
                                    stdout=subprocess.DEVNULL, 
                                    stderr=subprocess.DEVNULL,
