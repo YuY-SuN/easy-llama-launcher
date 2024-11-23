@@ -34,13 +34,20 @@ if os.path.exists(system_prompt) :
 ## リクエスト(method)
 import urllib.request
 import json
+import jinja2
 def question(user_prompt):
     global system_prompt
-    messages = [ 
-        { "role" : "system", "content" : system_prompt }
-    ,   { "role" : "user"  , "content" : user_prompt }
-    ]
-    prompt    = tokenizer.apply_chat_template(messages, tokenize=False)
+    try :
+        messages = [ 
+            { "role" : "system", "content" : system_prompt }
+        ,   { "role" : "user"  , "content" : user_prompt }
+        ]
+        prompt    = tokenizer.apply_chat_template(messages, tokenize=False)
+    except jinja2.exceptions.TemplateError:
+        messages = [ 
+            { "role" : "user"  , "content" : f"SYS: {system_prompt} \n USER: {user_prompt}" }
+        ]
+        prompt    = tokenizer.apply_chat_template(messages, tokenize=False)
  
     hdrs = {"content-type" : "application/json" }
     body = json.dumps({"prompt" : prompt }).encode("utf-8")
